@@ -1,0 +1,15 @@
+# Project Context & Standards
+
+## My Profile
+- Skill Level: [e.g., Intermediate Pythonista, Senior Frontend Dev]
+- Communication Style: [e.g., Concise, explain complex logic, skip the fluff]
+
+## Tech Stack Preferences
+- Language: TypeScript
+- UI: Tailwind CSS, Shadcn UI
+- State Management: React Context (No Redux)
+
+## Coding Rules
+- Always use functional components and hooks.
+- Prefer descriptive variable names over comments.
+- Ensure all exports are named, no default exports.
