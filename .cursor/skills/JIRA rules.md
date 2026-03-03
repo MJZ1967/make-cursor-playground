@@ -7,6 +7,8 @@ description: Defines and applies JIRA rules, workflows, best practices, and tick
 
 Skill for defining and applying JIRA rules, workflows, best practices, and ticket handling in projects.
 
+**Project reference:** Integration Engineering (`IEN`) — ticket types: Epic, Feature, Bug, Task, Sub-task.
+
 ---
 
 ## 1. JIRA Rules Definition
@@ -22,7 +24,7 @@ Skill for defining and applying JIRA rules, workflows, best practices, and ticke
 
 | Category | Purpose | Examples |
 |----------|---------|----------|
-| **Naming** | Consistent issue keys and summaries | `PROJ-123`, `PROJ-123-short-description` |
+| **Naming** | Consistent issue keys and summaries | `IEN-123`, `IEN-123-short-description` |
 | **Required fields** | What must be set before transition | Assignee, Sprint, Story Points, Labels |
 | **Validation** | Block invalid transitions or empty fields | "Cannot move to Done without Resolution" |
 | **Automation** | Auto-assign, auto-label, notifications | Assign to component lead when created |
@@ -85,7 +87,7 @@ Skill for defining and applying JIRA rules, workflows, best practices, and ticke
 
 ### 3.4 Naming & Conventions
 
-- **Commit messages**: reference ticket key (e.g. `PROJ-123 Add login validation`).
+- **Commit messages**: reference ticket key (e.g. `IEN-123 Add login validation`).
 - **Change references**: include ticket key and short summary in deploys or change records.
 
 ---
@@ -94,22 +96,22 @@ Skill for defining and applying JIRA rules, workflows, best practices, and ticke
 
 ### 4.1 Lifecycle
 
-1. **Create**: Correct type (Story, Bug, Task, Epic), project, component.
+1. **Create**: Correct type (Epic, Feature, Bug, Task), project, component.
 2. **Triage**: Priority, assignee (or leave unassigned per process), sprint/backlog.
 3. **Refine**: Acceptance criteria, estimate, dependencies.
 4. **Progress**: Move through workflow; keep status and assignee up to date.
 5. **Complete**: Resolution, time tracking if used, link to deploy.
 6. **Close/Archive**: When done and no longer needed on the board.
 
-### 4.2 Ticket Types
+### 4.2 Ticket Types (Integration Engineering)
 
 | Type | Use when |
 |------|----------|
-| **Epic** | Large initiative or theme; contains Stories/Tasks |
-| **Story** | User-facing value; has acceptance criteria |
-| **Task** | Work without direct user story (e.g. tech task, spike) |
-| **Bug** | Something is broken or wrong behavior |
-| **Subtask** | Part of a parent Story/Task |
+| **Epic** | Large initiative or theme; contains Features, Bugs, Tasks |
+| **Feature** | New product capability; has acceptance criteria |
+| **Task** | Small, distinct piece of work (e.g. tech task, spike) |
+| **Bug** | Problem or error; needs fix |
+| **Sub-task** | Part of a parent Feature, Task, or Bug |
 
 ### 4.3 Handling Blocked Items
 
@@ -119,7 +121,7 @@ Skill for defining and applying JIRA rules, workflows, best practices, and ticke
 
 ### 4.4 Templates
 
-- **Story**: Goal, context, acceptance criteria, out of scope, links.
+- **Feature**: Goal, context, acceptance criteria, out of scope, links.
 - **Bug**: Steps to reproduce, expected vs actual, environment, severity.
 - **Task**: Objective, steps or checklist, definition of done.
 
@@ -152,7 +154,7 @@ Before a ticket can be considered releasable from DONE:
 ### 5.3 Best Practices for Continuous Release
 
 - **Small, frequent releases**: Prefer smaller batches of DONE tickets; avoid large release trains.
-- **Traceability**: Link commits and deploys to ticket keys (e.g. `PROJ-123`).
+- **Traceability**: Link commits and deploys to ticket keys (e.g. `IEN-123`).
 - **Release notes**: Use labels like `release-notes` or `changelog` to flag tickets for release notes.
 - **Environment tracking**: Optional custom field for "Deployed to" (e.g. Staging, Production) if not automated.
 - **Hotfix handling**: Use separate workflow path for hotfixes (e.g. direct to production); document in ticket.
@@ -186,7 +188,7 @@ When defining or reviewing JIRA setup:
 - [ ] Required fields and validations are set for key transitions (e.g. to Done).
 - [ ] Naming and commit conventions are written down.
 - [ ] Ticket types and when to use each are clear.
-- [ ] Templates exist for Story, Bug, and Task (or equivalent).
+- [ ] Templates exist for Feature, Bug, and Task (or equivalent).
 - [ ] Board filters and columns match the workflow and team usage.
 - [ ] Automation rules are documented (what runs when).
 - [ ] Definition of Done and release conditions for continuous release are defined.
