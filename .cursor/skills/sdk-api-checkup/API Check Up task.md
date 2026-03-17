@@ -13,6 +13,7 @@ This skill defines **how to run the whole process** and **what structured outcom
 - **Changelog URL** — from Slack message or Airtable (Monitored apps).
 - **Tier** — T0 / T1 / T2 from Slack or Airtable (**app tier**).
 - **Team** — Athena | Atlantis | Plato | Hermes from Airtable (Resource Tracker or Monitored apps).
+- **Task** = maintenance (API changes impacting existing app implementation). **Feature** = new capability (not yet in app); **Feature tickets are created only for tier 0 or 1** — never for tier 2.
 
 ---
 
@@ -44,13 +45,25 @@ This skill defines **how to run the whole process** and **what structured outcom
 - Compare app usage to changelog/deprecation content.
 - Decide: **Impact** (Y/N). If Y, list **changes needed** (e.g. endpoints, auth, scopes, TLS).
 
-### 4. JIRA: check duplicates, then create or update
+### 4. Decide issue type: Task vs Feature
 
-- Per [JIRA](.cursor/skills/sdk-api-checkup/JIRA.md): **always check for an existing [API Update] ticket with the same component** before creating.
+Based on **API changelog** and **make-custom-app** review of app code:
+
+| Outcome | issueType | When |
+|--------|------------|------|
+| **Maintenance** | **Task** | API changes **impact existing** implementation: our app already uses the affected endpoints, modules, RPCs, or functions; work is to update, fix, or adapt. |
+| **New capability** | **Feature** | Changelog introduces something **new** that is **not covered** in our app (new endpoints, new behavior, new options). **Feature tickets are created only when app tier is 0 or 1.** For tier 2, do not create a Feature for new capabilities. |
+
+- **Rule:** New-capability (Feature) tickets are created **only** for **tier 0 or 1**. For tier 2, create only Task (maintenance) if there is impact on existing code; do not create a Feature.
+- Use all inputs (changelog content, current app modules/RPCs/functions, endpoints in use, **app tier**) to classify. One run can result in a Task, a Feature (tier 0/1 only), or both, or no ticket if no impact.
+
+### 5. JIRA: check duplicates, then create or update
+
+- Per [JIRA](.cursor/skills/sdk-api-checkup/JIRA.md): **always check for an existing [API Update] ticket with the same component** (and same issue type if possible) before creating.
 - **If existing ticket:** Add a new section to the ticket description: **SDK API Check up — Code analysis** (summary of impact, scope of modules/RPCs/functions affected).
-- **If no existing ticket and impact exists:** Create a new ticket per [JIRA](.cursor/skills/sdk-api-checkup/JIRA.md): Title, Description (API Change Published Date, API Due Date, API Change Description, Scope), Team from Airtable, Component = app label, Assignee empty, Due date from API Due Date (tier rule when empty).
+- **If no existing ticket and impact exists:** Create a new ticket per [JIRA](.cursor/skills/sdk-api-checkup/JIRA.md): **issueType** = Task (maintenance) or Feature (new capability) from step 4; Title, Description (API Change Published Date, API Due Date, API Change Description, Scope, Code analysis summary), Team from Airtable, Component = app label, Assignee empty, Due date from API Due Date (tier rule when empty).
 
-### 5. Update Airtable
+### 6. Update Airtable
 
 - In **Monitored apps**, set **Last API Changelog Check Date** to the current date for that app (after processing, whether or not a ticket was created).
 
@@ -65,9 +78,10 @@ Produce a clear result every run:
 | **No new changelog entries** | No ticket. Optionally refresh Last API Changelog Check Date in Airtable. |
 | **New entries, no integration impact** | No ticket. Update Last API Changelog Check Date in Airtable. |
 | **Impact — existing ticket** | Updated IEN-XXXX with section "SDK API Check up — Code analysis". Airtable updated. |
-| **Impact — new ticket** | Created IEN-XXXX per JIRA.md (title, description, Scope, Team, Component, Due date). Airtable updated. |
+| **Impact — new ticket (Task)** | Created IEN-XXXX as **Task** (maintenance: existing app code affected). Per JIRA.md. Airtable updated. |
+| **Impact — new ticket (Feature)** | Created IEN-XXXX as **Feature** (new capability not in app). **Only for tier 0 or 1.** Per JIRA.md. Airtable updated. |
 
-Always state which of the above applied and, if a ticket was created or updated, its key (e.g. IEN-XXXX).
+Always state which of the above applied and, if a ticket was created or updated, its key and issue type (e.g. IEN-XXXX Task, IEN-YYYY Feature).
 
 ---
 

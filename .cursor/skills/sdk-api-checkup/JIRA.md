@@ -31,10 +31,19 @@ Use these sections in the ticket description:
 
 | Section | Content |
 |---------|---------|
-| **API Change Published Date** | Date the 3rd party published the API change. |
+| **API Change Published Date** | Date when this API check up was done (analyzed and ticket created). Use only the date. |
 | **API Due Date** | End of life / deprecation / shutdown date set by the 3rd party. **If empty:** see rule below. |
 | **API Change Description** | Summary of the changes (from changelog/deprecation notice). |
-| **Scope** | List of modules, RPCs, or functions affected by the changes. |
+| **Scope** | Format as a table with columns **Type** (Modules \| RPCs \| Functions) and **Affected** (names per type). One row per type. See example below. |
+| **Code analysis summary** | Outcome of make-custom-app analysis: impact vs changelog/API docs (e.g. table: topic, impact, code change needed?), endpoints used, and conclusion or recommendations. Use heading **SDK API Check up — Code analysis**. |
+
+**Scope table example:**
+
+| Type     | Affected |
+|----------|----------|
+| Modules  | copyFileFolder, createFolder, getFile, ... |
+| RPCs     | listFolders, listFiles, ... |
+| Functions| pathRootJsonString, ... |
 
 ### API Due Date when empty
 
@@ -60,6 +69,6 @@ Use these sections in the ticket description:
 
 - **Before create:** Always check for duplicates by **[component]**.
 - **Title:** `[API Update] [component]: Summary of the changes`.
-- **Description:** API Change Published Date, API Due Date (tier 0/1 → +30 days if empty; tier 2 → leave empty), API Change Description, Scope.
+- **Description:** API Change Published Date (date of check up only), API Due Date (tier 0/1 → +30 days if empty; tier 2 → leave empty), API Change Description, Scope (table: Type, Affected), Code analysis summary (SDK API Check up — Code analysis).
 - **Team** = from Airtable (app label → team). **Assignee** = empty. **Due date** = API Due Date.
 - **Component** = app label.
