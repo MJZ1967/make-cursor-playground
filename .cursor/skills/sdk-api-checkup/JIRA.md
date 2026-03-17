@@ -41,7 +41,7 @@ Use these sections in the ticket description:
 | App tier | When API Due Date is empty |
 |----------|----------------------------|
 | **Tier 0 or 1** | Set to **current date + 30 days**. |
-| **Tier 2 or 3** | Leave **empty**. |
+| **Tier 2** | Leave **empty**. |
 
 ---
 
@@ -60,6 +60,6 @@ Use these sections in the ticket description:
 
 - **Before create:** Always check for duplicates by **[component]**.
 - **Title:** `[API Update] [component]: Summary of the changes`.
-- **Description:** API Change Published Date, API Due Date (tier 0/1 → +30 days if empty; tier 2/3 → leave empty), API Change Description, Scope.
+- **Description:** API Change Published Date, API Due Date (tier 0/1 → +30 days if empty; tier 2 → leave empty), API Change Description, Scope.
 - **Team** = from Airtable (app label → team). **Assignee** = empty. **Due date** = API Due Date.
 - **Component** = app label.
