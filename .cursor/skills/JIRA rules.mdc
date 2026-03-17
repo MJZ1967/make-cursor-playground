@@ -1,0 +1,286 @@
+---
+name: jira-rules
+description: Defines and applies JIRA rules, workflows, best practices, and ticket handling. Use when defining project JIRA conventions, creating workflows, writing ticket templates, establishing best practices, or when the user asks about JIRA setup, ticket lifecycle, or issue tracking standards.
+---
+
+# JIRA Rules, Workflows & Best Practices
+
+Skill for defining and applying JIRA rules, workflows, best practices, and ticket handling in projects.
+Always use this .mdc file as reference for JIRA tasks.
+
+### Project reference
+
+| Project | Key | Purpose |
+|--------|-----|--------|
+| **Integration Engineering** | `IEN` | Main engineering project. Ticket types: Epic, Feature, Bug, Task, Sub-task. |
+| **App documentation** | `CXPDOC2` | Project dedicated to app documentation. [Board](https://make.atlassian.net/jira/software/c/projects/CXPDOC2/boards/1162). |
+
+**IEN ↔ CXPDOC2 workflow:** IEN tickets move **In testing → Documentation → Done**. While an IEN ticket is in **Documentation**, a corresponding **CXPDOC2** ticket is created in parallel to track the documentation work.
+
+---
+
+## 1. Workflows
+
+The following is extracted from the **IEN** (Integration Engineering) project. All statuses and transitions below reflect the current JIRA configuration.
+
+### 1.1 IEN statuses (by category)
+
+| Category   | Status         | Description / use |
+|-----------|----------------|-------------------|
+| **To Do** | Backlog        | Not yet scheduled; default for new items. |
+| **To Do** | To Do          | Scheduled / ready to pick up. |
+| **To Do** | Preparation    | Minimum development requirements in progress. |
+| **To Do** | Refined        | Refined and ready for development. |
+| **In Progress** | In Progress | Actively worked on by assignee. |
+| **In Progress** | Commit       | Code committed; awaiting testing. |
+| **In Progress** | Waiting      | Blocked or paused; work will resume later. |
+| **In Progress** | In Testing   | In QA / testing. |
+| **In Progress** | Documentation | Docs needed; CXPDOC2 ticket created in parallel. |
+| **Done**  | Done           | Work complete (e.g. from Documentation). |
+| **Done**  | Closed         | Finished; resolution set. Can be reopened. |
+| **Done**  | Cancelled      | Cancelled (mainly used for Epics). |
+
+### 1.2 Workflow by issue type
+
+**Task, Feature, Bug** — same workflow. Main path:
+
+1. **To Do** (Backlog / To Do / Preparation / Refined)  
+   → **Commit** (transition: *Commit*)  
+   → **In Testing** (transition: *Changes committed*)  
+   → **Documentation** (transition: *Passed, docs needed*)  
+   → **Done** (transition: *Done*) or **Closed** (transition: *Closed*).
+
+From **In Progress**: *Commit* → Commit; *Testing required* → In Testing; *Return to TODO* → To Do; *Suspend progress* → Waiting.
+
+From **Commit**: *Changes committed* → In Testing; *Cannot be committed* → In Progress; *Suspend commit* → Waiting.
+
+From **In Testing**: *Passed, docs needed* → Documentation; *Failed* → In Progress; *Suspend testing* → Waiting.
+
+From **Documentation**: *Done* → Done (resolution screen); *Suspend* → Waiting.
+
+From **Closed**: *To Do* / *Preparation* / *Refined* / *Backlog* back to To Do category; *Let's uncancel it* → Waiting.
+
+**Epic** — simplified flow:
+
+- **Backlog** ↔ **To Do** (transition: *Ready for Progress*).
+- **Closed** (transition: *Closed*).
+- **Cancelled** (transition: *CANCELED*).
+
+**Sub-task** — follows the same workflow as the parent (Task, Feature, or Bug).
+
+**App** — uses the same workflow as Task / Feature / Bug.
+
+### 1.3 Main flow (Task / Feature / Bug)
+
+```
+Backlog / To Do / Preparation / Refined
+    → Commit → In Testing → Documentation → Done / Closed
+```
+
+Optional: **Waiting** from Commit, In Testing, or Documentation; return paths to To Do or In Progress as above.
+
+### 1.4 Workflow best practices
+
+- Use **Preparation** when completing minimum dev requirements; move to **Commit** when code is ready for testing.
+- Use **In Testing** for QA; **Passed, docs needed** when documentation is required (CXPDOC2 ticket created in parallel).
+- Use **Documentation** until app docs are done; then **Done** or **Closed**.
+- From **Closed**, use *To Do* / *Preparation* / *Refined* or *Let's uncancel it* to reopen.
+- Keep status and assignee up to date so the board reflects reality.
+
+---
+
+## 2. Best Practices
+
+### 2.1 Ticket Quality
+
+- **Summary**: Always use the format `[app]: [what is done]`. The `[app]` part = the ticket **component** (e.g. Slack, Google Gemini AI). One clear line; include ticket key when useful.
+- **Description**: Context, acceptance criteria, and links (design, docs, related tickets).
+- **Labels**: Consistent set (e.g. `team-x`, `tech-debt`, `priority-high`).
+- **Links**: Use "blocks", "is blocked by", "relates to" to keep dependencies visible.
+
+### 2.2 Sizing & Estimation
+
+- Use **Story Points** or **T-shirt sizes** consistently per project.
+- Definition of "Done" aligned across team (code, tests, docs, review).
+- Avoid oversized tickets; split when exceeding agreed max size.
+
+### 2.3 Board Hygiene
+
+- Limit WIP per status or per person where it helps.
+- Regular backlog refinement and prioritization.
+- Archive or close obsolete tickets; keep active sprints focused.
+
+### 2.4 Naming & Conventions
+
+- **Commit messages**: reference ticket key (e.g. `IEN-123 Add login validation`).
+- **Change references**: include ticket key and short summary in deploys or change records.
+
+---
+
+## 3. Ticket Handling
+
+### 3.1 Lifecycle
+
+1. **Create**: Correct type (Epic, Feature, Bug, Task), project, **component**. Set **component** = app/area (e.g. Slack, Google Gemini AI). Use summary format `[app]: [what is done]` so the title matches the component.
+2. **Triage**: Priority, assignee (or leave unassigned per process), sprint/backlog.
+3. **Refine**: Acceptance criteria, estimate, dependencies.
+4. **Progress**: Move through workflow; keep status and assignee up to date.
+5. **Complete**: Resolution, time tracking if used, link to deploy.
+6. **Close/Archive**: When done and no longer needed on the board.
+
+### 3.2 Ticket Types (Integration Engineering)
+
+| Type | Use when |
+|------|----------|
+| **Epic** | Large initiative or theme; contains Features, Bugs, Tasks |
+| **Feature** | New product capability; has acceptance criteria |
+| **Task** | Small, distinct piece of work (e.g. tech task, spike) |
+| **Bug** | Problem or error; needs fix |
+| **Sub-task** | Part of a parent Feature, Task, or Bug |
+
+### 3.3 Handling Blocked Items
+
+- Use "blocked by" link or label (e.g. `blocked`).
+- Optional status "Blocked" or clear convention (e.g. comment + label).
+- Unblock when dependency is resolved; update status and remove block.
+
+### 3.4 Templates
+
+- **Feature**: Goal, context, acceptance criteria, out of scope, links.
+- **Bug**: Steps to reproduce, expected vs actual, environment, severity.
+- **Task**: Objective, steps or checklist, definition of done.
+
+### 3.5 New ticket creation
+
+Use the following structure when creating **Task** or **Feature** issues. Reference: [IEN-14682](https://make.atlassian.net/browse/IEN-14682).
+
+#### Summary
+
+- **Always** use the format `[app]: [what is done]`.
+- `[app]` = the ticket **component** (e.g. Slack, Google Gemini AI). Set the JIRA component to match the app in the title.
+- Examples: `Slack: AI Learning`, `Google Gemini AI: Inject current date in Simple text prompt`.
+
+#### Description structure (Markdown)
+
+Use these sections in order. All sections use Markdown; bullets use `*` or `-`.
+
+| Section | Purpose | Required |
+|--------|---------|----------|
+| **Goal** | What we are doing, why, and when (context and objective). Include API or vendor documentation links here when relevant (e.g. deprecation notices, Service Account docs). | Yes |
+| **Acceptance** | Bullet list of acceptance criteria (what “done” means). | Yes |
+| **Notes** | References: Slack thread URL, design doc, related tickets, etc. | Optional |
+
+**Task** — use as above. Keep Goal and Acceptance concise; add Definition of done bullets under Acceptance if useful.
+
+**Feature** — use the same structure; add **Out of scope** (bullet list) when it helps avoid ambiguity.
+
+#### Example (minimal)
+
+```markdown
+Goal
+
+This is the goal — what, why, when.
+
+Acceptance
+
+* acceptance 1
+* acceptance 2
+* acceptance 3
+
+Notes
+
+* Slack thread - URL
+* any reference
+```
+
+#### Checklist when creating a Task or Feature
+
+- [ ] **Summary**: Format `[app]: [what is done]`; **component** set to match `[app]`.
+- [ ] **Goal**: Filled with context and objective; API or vendor documentation links in Goal when the ticket stems from external/API changes (e.g. deprecation, new auth).
+- [ ] **Acceptance**: Bullet list of criteria (and Definition of done if needed).
+- [ ] **Due Date**: If the source mentions a deadline (e.g. "must be done before DDMMYYYY", "removal date March 3, 2027"), set the **Due Date** custom field in JIRA to that date.
+- [ ] **Notes**: References added when relevant (e.g. Slack, Confluence, related issues). Do not add a reminder about creating a CXPDOC2 ticket when moving to Documentation — that is default practice.
+
+### 3.6 Lessons learned (creating from external requests)
+
+When creating IEN tickets from vendor announcements, deprecation notices, or API changes:
+
+* **Due Date**: If the source states a deadline in any form (e.g. "must be done before 03.03.2027", "full removal date March 3, 2027", "by end of Q2 2026"), set the JIRA **Due Date** custom field to that date so the board reflects the real deadline.
+* **API / documentation in Goal**: If the request includes a link to API docs, developer guides, or vendor documentation (e.g. Service Account setup, migration guide), put that reference **directly in the Goal section** so it is visible with the context. Use Notes for secondary references (Slack, Confluence, related tickets).
+* **CXPDOC2 workflow**: Do not add a note in the ticket like "when in Documentation, create parallel CXPDOC2 ticket". Creating a CXPDOC2 ticket when an IEN item moves to Documentation is standard practice and does not need to be repeated in every ticket.
+
+---
+
+## 4. DONE Tickets & Continuous Release
+
+Best practices and release guidelines for DONE tickets in a continuous release process.
+
+### 4.1 Definition of Done for Release
+
+Before a ticket can be considered releasable from DONE:
+
+- **Code**: Integrated and included in the release stream.
+- **Review**: All CI checks passing.
+- **Tests**: Unit, integration, and E2E where applicable; no known regressions.
+- **Documentation**: Changelog, runbooks, or API docs updated if required.
+- **No blockers**: No linked "blocked by" or open critical bugs.
+- **Resolution**: Properly resolved (e.g. Fixed, Done, Deployed) per project convention.
+
+### 4.2 Release Conditions
+
+| Condition | Requirement |
+|-----------|-------------|
+| **Deployability** | No broken builds; deployment pipeline green |
+| **Feature flags** | Optional: work behind flag until ready; document flag name |
+| **Dependencies** | Linked tickets or services deployed in correct order |
+| **Rollback readiness** | Rollback plan or feature flag off-switch documented where relevant |
+
+### 4.3 Best Practices for Continuous Release
+
+- **Small, frequent releases**: Prefer smaller batches of DONE tickets; avoid large release trains.
+- **Traceability**: Link commits and deploys to ticket keys (e.g. `IEN-123`).
+- **Release notes**: Use labels like `release-notes` or `changelog` to flag tickets for release notes.
+- **Environment tracking**: Optional custom field for "Deployed to" (e.g. Staging, Production) if not automated.
+- **Hotfix handling**: Use separate workflow path for hotfixes (e.g. direct to production); document in ticket.
+
+### 4.4 Post-DONE Workflow
+
+- **Deployed**: Optional status or label when work is live in production.
+- **Monitoring**: Link to dashboards, alerts, or runbooks for monitoring new changes.
+- **Feedback loop**: Reopen if production issues arise; create linked Bug ticket for tracking.
+- **Archiving**: Close only after stable in production for agreed period (e.g. 7 days).
+
+### 4.5 Release Validation Checklist
+
+Before including a DONE ticket in a release:
+
+- [ ] Code integrated in the release stream.
+- [ ] CI/CD pipeline green.
+- [ ] Tests passing; no known critical issues.
+- [ ] Documentation and changelog updated.
+- [ ] Feature flags configured (if used).
+- [ ] Dependencies and order of deployment verified.
+- [ ] Rollback or feature-disable option documented where needed.
+
+---
+
+## 5. Quick Reference Checklist
+
+When defining or reviewing JIRA setup:
+
+- [ ] Workflow states and transitions are documented and understood.
+- [ ] Required fields and validations are set for key transitions (e.g. to Done).
+- [ ] Naming and commit conventions are written down.
+- [ ] Ticket types and when to use each are clear.
+- [ ] Templates exist for Feature, Bug, and Task (or equivalent).
+- [ ] Board filters and columns match the workflow and team usage.
+- [ ] Automation rules are documented (what runs when).
+- [ ] Definition of Done and release conditions for continuous release are defined.
+
+---
+
+## 6. Additional Resources
+
+- Link to internal JIRA space or Confluence page for project-specific rules.
+- Link to workflow diagrams or screenshots if available.
+- Reference to team SLA or response expectations (e.g. triage within 24h).
